@@ -18,3 +18,7 @@ A Home Assistant integration that provides a native **Calendar entity** and **Ne
 2. Add this repo URL with category **Integration**.
 3. Download and restart Home Assistant.
 4. Go to **Settings** > **Devices & Services** > **Add Integration** > **Running Races**.
+
+## 📄 License
+
+This project is licensed under the **GNU General Public License v3.0 (GPLv3)** - see the [LICENSE](LICENSE) file for details.
