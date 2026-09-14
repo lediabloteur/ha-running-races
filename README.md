@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="icon.png" width="160" height="160" alt="Running Races Home Assistant Icon" />
+</p>
+
 # Regional Running Races & Trails for Home Assistant 🏅📅
 
 [![HACS Custom Repository](https://img.shields.io/badge/HACS-Custom-orange.svg)](https://hacs.xyz/)
