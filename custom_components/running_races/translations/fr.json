@@ -2,10 +2,23 @@
   "config": {
     "step": {
       "user": {
-        "title": "Courses & Trails R\u00e9gionaux",
-        "description": "S\u00e9lectionnez votre d\u00e9partement pour le calendrier des comp\u00e9titions.",
+        "title": "Courses & Trails Régionaux (Miles Republic)",
+        "description": "Sélectionnez vos départements et vos disciplines sportives pour suivre les compétitions officielles.",
         "data": {
-          "department": "Num\u00e9ro de D\u00e9partement (ex: 86)"
+          "departments": "Département(s)",
+          "sports": "Disciplines sportives"
+        }
+      }
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Options des Courses & Trails",
+        "description": "Modifiez les départements et les disciplines sportives surveillées.",
+        "data": {
+          "departments": "Département(s)",
+          "sports": "Disciplines sportives"
         }
       }
     }

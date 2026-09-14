@@ -2,10 +2,23 @@
   "config": {
     "step": {
       "user": {
-        "title": "Regional Running Races & Trails",
-        "description": "Select your department for regional race events.",
+        "title": "Regional Running Races & Trails (Miles Republic)",
+        "description": "Select your departments and preferred sports to track upcoming official races and competitions.",
         "data": {
-          "department": "Department Number (e.g. 86)"
+          "departments": "Department(s)",
+          "sports": "Sports / Disciplines"
+        }
+      }
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Running Races & Trails Options",
+        "description": "Update configured departments and sports disciplines.",
+        "data": {
+          "departments": "Department(s)",
+          "sports": "Sports / Disciplines"
         }
       }
     }
