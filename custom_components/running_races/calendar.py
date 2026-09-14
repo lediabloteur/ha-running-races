@@ -1,5 +1,5 @@
 """Calendar platform for Running Races."""
-from datetime import datetime, timedelta
+from datetime import datetime, date, timedelta
 from homeassistant.components.calendar import CalendarEntity, CalendarEvent
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
@@ -26,19 +26,15 @@ class RunningRacesCalendarEntity(CoordinatorEntity, CalendarEntity):
     def _get_events(self) -> list[CalendarEvent]:
         events = []
         races = self.coordinator.data.get("races", [])
-        local_tz = dt_util.get_default_time_zone()
 
         for r in races:
             try:
-                dt_raw = datetime.strptime(f"{r['date']} {r['time']}", "%Y-%m-%d %H:%M")
-                start_dt = dt_raw.replace(tzinfo=local_tz)
-                end_dt = start_dt + timedelta(hours=3)
-
+                dt = datetime.strptime(r["date"], "%Y-%m-%d").date()
                 events.append(CalendarEvent(
-                    start=start_dt,
-                    end=end_dt,
+                    start=dt,
+                    end=dt + timedelta(days=1),
                     summary=f"{r['name']} ({r['distance']})",
-                    description=f"{r['type']} · Dénivelé {r['elevation']} · {r['location']}\nInfos & Inscription: {r['url']}",
+                    description=f"{r['type']} · Dénivelé {r['elevation']} · {r['location']}\nHeure de départ: {r['time']}\nInfos: {r['url']}",
                     location=r["location"]
                 ))
             except Exception:
@@ -47,15 +43,14 @@ class RunningRacesCalendarEntity(CoordinatorEntity, CalendarEntity):
 
     @property
     def event(self) -> CalendarEvent | None:
-        now = dt_util.now()
-        events = self._get_events()
-        for e in events:
-            if e.end >= now:
+        today = dt_util.now().date()
+        for e in self._get_events():
+            if e.end >= today:
                 return e
         return None
 
     async def async_get_events(self, hass: HomeAssistant, start_date: datetime, end_date: datetime) -> list[CalendarEvent]:
         events = self._get_events()
-        start_tz = start_date if start_date.tzinfo else start_date.replace(tzinfo=dt_util.get_default_time_zone())
-        end_tz = end_date if end_date.tzinfo else end_date.replace(tzinfo=dt_util.get_default_time_zone())
-        return [e for e in events if start_tz <= e.end and e.start <= end_tz]
+        start_d = start_date.date()
+        end_d = end_date.date()
+        return [e for e in events if start_d <= e.end and e.start <= end_d]
