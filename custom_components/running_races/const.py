@@ -1,0 +1,5 @@
+"""Constants for Running Races integration."""
+DOMAIN = "running_races"
+NAME = "Regional Running Races & Trails"
+CONF_DEPARTMENT = "department"
+DEFAULT_DEPARTMENT = "86"

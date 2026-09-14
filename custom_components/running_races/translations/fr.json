@@ -1,0 +1,13 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Courses & Trails R\u00e9gionaux",
+        "description": "S\u00e9lectionnez votre d\u00e9partement pour le calendrier des comp\u00e9titions.",
+        "data": {
+          "department": "Num\u00e9ro de D\u00e9partement (ex: 86)"
+        }
+      }
+    }
+  }
+}

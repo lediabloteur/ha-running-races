@@ -1,0 +1,13 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Regional Running Races & Trails",
+        "description": "Select your department for regional race events.",
+        "data": {
+          "department": "Department Number (e.g. 86)"
+        }
+      }
+    }
+  }
+}
