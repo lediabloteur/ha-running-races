@@ -1,5 +1,5 @@
 """Calendar platform for Running Races."""
-from datetime import datetime, date, timedelta
+from datetime import datetime, timedelta, time
 from homeassistant.components.calendar import CalendarEntity, CalendarEvent
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
@@ -26,13 +26,16 @@ class RunningRacesCalendarEntity(CoordinatorEntity, CalendarEntity):
     def _get_events(self) -> list[CalendarEvent]:
         events = []
         races = self.coordinator.data.get("races", [])
+        tz = dt_util.DEFAULT_TIME_ZONE
 
         for r in races:
             try:
-                dt = datetime.strptime(r["date"], "%Y-%m-%d").date()
+                d = datetime.strptime(r["date"], "%Y-%m-%d").date()
+                start_dt = datetime.combine(d, time.min, tzinfo=tz)
+                end_dt = datetime.combine(d + timedelta(days=1), time.min, tzinfo=tz)
                 events.append(CalendarEvent(
-                    start=dt,
-                    end=dt + timedelta(days=1),
+                    start=start_dt,
+                    end=end_dt,
                     summary=f"{r['name']} ({r['distance']})",
                     description=f"{r['type']} · Dénivelé {r['elevation']} · {r['location']}\nHeure de départ: {r['time']}\nInfos: {r['url']}",
                     location=r["location"]
@@ -43,14 +46,12 @@ class RunningRacesCalendarEntity(CoordinatorEntity, CalendarEntity):
 
     @property
     def event(self) -> CalendarEvent | None:
-        today = dt_util.now().date()
+        now = dt_util.now()
         for e in self._get_events():
-            if e.end >= today:
+            if e.end >= now:
                 return e
         return None
 
     async def async_get_events(self, hass: HomeAssistant, start_date: datetime, end_date: datetime) -> list[CalendarEvent]:
         events = self._get_events()
-        start_d = start_date.date()
-        end_d = end_date.date()
-        return [e for e in events if start_d <= e.end and e.start <= end_d]
+        return [e for e in events if start_date <= e.end and e.start <= end_date]
