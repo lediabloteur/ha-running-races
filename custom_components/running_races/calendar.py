@@ -5,6 +5,7 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
+import homeassistant.util.dt as dt_util
 
 from .const import DOMAIN
 
@@ -22,33 +23,39 @@ class RunningRacesCalendarEntity(CoordinatorEntity, CalendarEntity):
         self._attr_unique_id = f"{entry.entry_id}_calendar"
         self._attr_icon = "mdi:medal-outline"
 
-    @property
-    def event(self) -> CalendarEvent | None:
-        races = self.coordinator.data.get("races", [])
-        now = datetime.now()
-        for r in races:
-            dt = r["datetime"]
-            if dt >= now:
-                return CalendarEvent(
-                    start=dt,
-                    end=dt + timedelta(hours=3),
-                    summary=f"{r['name']} ({r['distance']})",
-                    description=f"{r['type']} · Dénivelé {r['elevation']} · {r['location']}\nInfos & Inscription: {r['url']}",
-                    location=r["location"]
-                )
-        return None
-
-    async def async_get_events(self, hass: HomeAssistant, start_date: datetime, end_date: datetime) -> list[CalendarEvent]:
+    def _get_events(self) -> list[CalendarEvent]:
         events = []
-        for r in self.coordinator.data.get("races", []):
-            dt = r["datetime"]
-            end_dt = dt + timedelta(hours=3)
-            if start_date <= end_dt and dt <= end_date:
+        races = self.coordinator.data.get("races", [])
+        local_tz = dt_util.get_default_time_zone()
+
+        for r in races:
+            try:
+                dt_raw = datetime.strptime(f"{r['date']} {r['time']}", "%Y-%m-%d %H:%M")
+                start_dt = dt_raw.replace(tzinfo=local_tz)
+                end_dt = start_dt + timedelta(hours=3)
+
                 events.append(CalendarEvent(
-                    start=dt,
+                    start=start_dt,
                     end=end_dt,
                     summary=f"{r['name']} ({r['distance']})",
                     description=f"{r['type']} · Dénivelé {r['elevation']} · {r['location']}\nInfos & Inscription: {r['url']}",
                     location=r["location"]
                 ))
-        return events
+            except Exception:
+                pass
+        return sorted(events, key=lambda x: x.start)
+
+    @property
+    def event(self) -> CalendarEvent | None:
+        now = dt_util.now()
+        events = self._get_events()
+        for e in events:
+            if e.end >= now:
+                return e
+        return None
+
+    async def async_get_events(self, hass: HomeAssistant, start_date: datetime, end_date: datetime) -> list[CalendarEvent]:
+        events = self._get_events()
+        start_tz = start_date if start_date.tzinfo else start_date.replace(tzinfo=dt_util.get_default_time_zone())
+        end_tz = end_date if end_date.tzinfo else end_date.replace(tzinfo=dt_util.get_default_time_zone())
+        return [e for e in events if start_tz <= e.end and e.start <= end_tz]
