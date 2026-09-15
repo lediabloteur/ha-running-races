@@ -2,7 +2,6 @@
   "domain": "running_races",
   "name": "Regional Running Races & Trails",
   "codeowners": [
-    "@lediabloteur",
     "@lediabloteur"
   ],
   "config_flow": true,
