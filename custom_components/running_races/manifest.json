@@ -2,14 +2,15 @@
   "domain": "running_races",
   "name": "Regional Running Races & Trails",
   "codeowners": [
-    "@romainsapin"
+    "@lediabloteur",
+    "@lediabloteur"
   ],
   "config_flow": true,
-  "documentation": "https://github.com/romainsapin/ha-running-races",
-  "issue_tracker": "https://github.com/romainsapin/ha-running-races/issues",
+  "documentation": "https://github.com/lediabloteur/ha-running-races",
+  "issue_tracker": "https://github.com/lediabloteur/ha-running-races/issues",
   "requirements": [
     "requests>=2.31.0"
   ],
-  "version": "1.1.0",
+  "version": "1.1.1",
   "iot_class": "cloud_polling"
 }
